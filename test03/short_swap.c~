@@ -1,0 +1,37 @@
+// Swap bytes of a short
+
+#include <stdint.h>
+#include <stdlib.h>
+#include <assert.h>
+
+// given uint16_t value return the value with its bytes swapped
+uint16_t short_swap(uint16_t value) {
+    // PUT YOUR CODE HERE
+    
+    char *bits = malloc((16) * sizeof(char));
+    int i = 0;
+    
+    //Reads in the 16 bits
+    while (i <= 15) {
+        if ((value & 1) == 1) {
+            bits[i] = '1';
+        }
+        else {
+            bits[i] = '0';
+        }
+        value = value << 1;    
+        i++;
+    }
+    
+    //swap 2 bytes
+    int j = 0;
+    while (j <=7) {
+        bits[j] = bits[15 - j];
+        j++;
+    }
+    int k = 8;
+    while (k <= 15) {
+        bits[k] = bits[k - 8];
+    }
+    return bits;
+}

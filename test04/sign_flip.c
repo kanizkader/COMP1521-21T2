@@ -1,0 +1,18 @@
+#include "sign_flip.h"
+
+// given the 32 bits of a float return it with its sign flipped
+uint32_t sign_flip(uint32_t f) {
+    int result;
+    uint32_t mask = 1u;
+    uint32_t mask2 = 0xFFFFFFFF >> 1;
+    result = f >> 31;
+    if (result == mask) {
+        f = mask2 & f;
+    }
+    else {
+        f = (mask << 31) ^ f;
+    }
+    
+    
+    return f; // REPLACE ME WITH YOUR CODE
+}
