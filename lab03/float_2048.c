@@ -1,0 +1,119 @@
+// Multiply a float by 2048 using bit operations only
+
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <assert.h>
+
+#include "floats.h"
+
+// float_2048 is given the bits of a float f as a uint32_t
+// it uses bit operations and + to calculate f * 2048
+// and returns the bits of this value as a uint32_t
+//
+// if the result is too large to be represented as a float +inf or -inf is returned
+//
+// if f is +0, -0, +inf or -inf, or Nan it is returned unchanged
+//
+// float_2048 assumes f is not a denormal number
+//
+int is_nan(float_components_t f);
+int is_zero(float_components_t f);
+int is_positive_infinity(float_components_t f);
+int is_negative_infinity(float_components_t f);
+uint32_t float_2048(uint32_t f) {
+    // PUT YOUR CODE HERE
+    float_components_t num;
+    
+    //extract sign
+    int result_sign;
+    result_sign = f >> 31;
+    num.sign = result_sign; 
+    
+    //extract exponent
+    uint32_t exp = 0;
+    
+    uint32_t mask_1 = 255;
+    uint32_t mask = mask_1 << 23;
+    exp = (f & mask) >> 23;
+    num.exponent = exp;
+    
+    //extract fraction
+    uint32_t mask00 = 8388607;
+    uint32_t frac = f & mask00;
+    num.fraction = frac;
+    
+    if (is_positive_infinity(num) == 1 || is_negative_infinity(num) == 1 || is_zero(num) == 1 || is_nan(num) == 1) {
+        return f;
+    }
+    
+    
+        num.exponent = num.exponent + 11;
+      
+    if ( num.exponent >= 255 && num.sign == 1) {
+        return -1;
+    }
+    else if ( num.exponent >= 255 && num.sign == 0) {
+        return 2139095040;
+    }
+        
+    num.sign = num.sign << 31;
+    num.exponent = num.exponent << 23;
+    num.fraction = num.fraction << 0;
+    
+    uint32_t final = 0;
+    final = num.sign | final;
+    final = num.exponent | final;
+    final = num.fraction | final;
+    return final;
+}
+// given the 3 components of a float
+// return 1 if it is NaN, 0 otherwise
+int is_nan(float_components_t f) {
+    // PUT YOUR CODE HERE
+    //NaN
+    if (f.exponent == 255 && f.fraction > 0) {
+    //exp == 255 fract > 0
+        return 1;
+    }
+    else {
+        return 0;
+    }  
+    
+}
+
+// given the 3 components of a float
+// return 1 if it is inf, 0 otherwise
+int is_positive_infinity(float_components_t f) {
+    if (f.exponent == 255 && f.fraction == 0 && f.sign == 0) {
+        return 1;
+    }
+    else {
+        return 0;
+    }   
+}
+
+// given the 3 components of a float
+// return 1 if it is -inf, 0 otherwise
+int is_negative_infinity(float_components_t f) {
+    // PUT YOUR CODE HERE
+    if (f.exponent == 255 && f.fraction == 0 && f.sign == 1) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+
+// given the 3 components of a float
+// return 1 if it is 0 or -0, 0 otherwise
+int is_zero(float_components_t f) {
+    // PUT YOUR CODE HERE
+    if (f.fraction == 0 && f.exponent == 0) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+    
+}

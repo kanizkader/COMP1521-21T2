@@ -1,0 +1,21 @@
+//Lab 1
+//By z5363412
+//Remove Uneven Lines of Input
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 1024
+int main(void) {
+    char str[MAX];
+    while (fgets(str, MAX, stdin) != NULL) {        
+        
+        int length;
+        length = strlen(str);
+        if (length % 2 == 0) {
+            fputs(str, stdout);
+        }   
+    }
+    
+	return 0;
+}
